@@ -1,5 +1,79 @@
 #include<bits/stdc++.h>
 using namespace std;
+#define ll long long int
+vector<ll>arr;
+set<pair<ll,ll>>bot,top;
+pair<ll,ll> median={-1,-1};
+void adjust(){
+    //Total Element so Far
+    ll size=bot.size()+top.size();
+    
+    if(bot.size()<((size)/2)){
+        bot.insert(median);
+        median=*(top.begin());
+        top.erase(top.begin());
+    }
+    if(bot.size()>((size)/2)){
+        top.insert(median);
+        median=*(--bot.end());
+        bot.erase((--bot.end()));
+    }
+}
+
+void add(pair<ll,ll> ele){
+    if(median.first==-1){
+        median=ele;
+        return;
+    }
+    if(ele.first<median.first){
+        bot.insert(ele);
+    }else{
+        top.insert(ele);
+    }
+    adjust();
+}
+
+void rem(pair<ll,ll> ele){
+    if(ele.first==median.first){
+         median=*(top.begin());
+        top.erase(top.begin());
+    }
+     else if(ele.first<median.first){
+        bot.erase(ele);
+    }else{
+        top.erase(ele);
+    }
+    adjust();
+}
+
+int main(){
+    ll n,k;
+    cin>>n>>k;
+    for(ll i=0;i<n;i++){
+        ll x;
+        cin>>x;
+        arr.push_back(x);
+    }
+    if(k==1){
+        for(ll i=0;i<n;i++){
+            cout<<arr[i]<<" ";
+        }
+        return 0;
+    }
+    
+    for(ll i=0;i<k-1;i++){
+        add({arr[i],i});
+    }
+        
+    for(ll i=k-1;i<n;i++){
+        add({arr[i],i});
+        cout<<median.first<<" ";
+        rem({arr[i-k+1],i-k+1});
+    }
+}
+/*//This Code wont Pass All Test Cases
+#include<bits/stdc++.h>
+using namespace std;
 #define ll long long int 
 #define pair pair<ll,ll>
 
@@ -61,4 +135,4 @@ void print(vector<ll>arr){
 
 int main(){
     start();
-}
+}*/
